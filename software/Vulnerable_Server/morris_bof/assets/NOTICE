@@ -1,0 +1,12 @@
+These two programs come unchanged from Dr. Du's Morris worm example in
+seed-emulator:
+
+    examples/yesterday_once_more/Y02_morris_worm/emulator/container_files/
+
+  server   his server.c, 64-bit: accepts connections on port 9090 and feeds
+           each one to `stack`
+  stack    his stack.c, 32-bit and static, built with
+           `gcc -DBUF_SIZE=100 -DSHOW_FP -z execstack -fno-stack-protector -static -m32`
+
+The sources and the Makefile are copied next to this file under src/.
+To rebuild them: `cd src && make && cp server stack ../`.
