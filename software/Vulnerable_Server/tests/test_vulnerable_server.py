@@ -12,10 +12,10 @@ import pytest
 from seedemu.core import Binding, Emulator, Filter, Layer
 from seedemu.layers import Base, Routing
 
+from software.Core.marks import mark, marked_hosts
 from software.Vulnerable_Server import MorrisBof, MorrisBofExploit, VulnerableServer
 from software.Vulnerable_Server import Vulnerability, vulnerable_hosts
 from software.Vulnerable_Server.morris_bof import vulnerability as morris
-from software.Vulnerable_Server import service
 
 # sha256 of Prof. Du's two programs, as they are in his Morris worm example.
 HIS_PROGRAMS = {
@@ -97,7 +97,7 @@ def test_the_service_marks_each_machine_and_others_find_them_by_the_mark():
     emu.render()
     found = vulnerable_hosts(emu, "morris-bof")
     assert names(found) == ["victim1", "victim2", "victim3"]       # found, never typed
-    assert all(node.getAttribute(service.MARK) == "morris-bof" for node in found)
+    assert marked_hosts(emu, "morris-bof") == found                # the same machines, through Core
     assert vulnerable_hosts(emu, "weak-login") == []               # nobody has that one
 
 
@@ -111,6 +111,32 @@ def test_one_machine_can_get_a_different_vulnerability():
     assert "/bof/server" in hosts["victim1"].getImportedFiles()
     assert "/bof/server" not in hosts["victim2"].getImportedFiles()
     assert "/etc/weak-login" in {item.get()[0] for item in hosts["victim2"].getFiles()}
+
+
+def test_a_machine_gets_one_vulnerability():
+    """Two installations with two vulnerabilities on the same machine is a mistake. Say so, at build time."""
+    vulns = VulnerableServer(MorrisBof())
+    vulns.install("first")
+    vulns.install("second").setVulnerability(WeakLogin())
+    emu, base = Emulator(), Base()
+    asn = base.createAutonomousSystem(171)
+    asn.createNetwork("net0")
+    asn.createHost("victim1").joinNetwork("net0")
+    emu.addLayer(base)
+    emu.addLayer(vulns)
+    emu.addBinding(Binding("first", filter=Filter(asn=171, nodeName="victim1")))
+    emu.addBinding(Binding("second", filter=Filter(asn=171, nodeName="victim1", allowBound=True)))
+    with pytest.raises(ValueError, match="'weak-login' as well as 'morris-bof': a machine gets one vulnerability"):
+        emu.render()
+
+
+def test_the_service_s_machines_may_still_carry_other_pieces_marks():
+    """Core lets a machine carry several marks; the one-vulnerability rule is only this service's."""
+    emu, hosts = build(VulnerableServer(MorrisBof()))
+    emu.render()
+    mark(hosts["victim1"], "operator")
+    assert names(marked_hosts(emu, "morris-bof")) == ["victim1", "victim2", "victim3"]
+    assert names(marked_hosts(emu, "operator")) == ["victim1"]
 
 
 def test_the_marks_are_there_before_any_piece_renders():
