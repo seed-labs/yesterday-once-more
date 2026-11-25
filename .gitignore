@@ -1,14 +1,36 @@
 # Emulator build output
 output/
-
-# Python
-__pycache__/
-*.pyc
-.venv/
+output-*/
 
 # Emulator dumps and map data
 *.bin
 .map.seed*
 
-# Editors / OS
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Logs and local secrets
+*.log
+.env
+
+# Saved Docker images
+*.tar
+*.tar.gz
+
+# Agent and editor files
+.claude/
+CLAUDE.md
+AGENTS.md
+.vscode/
+.idea/
+*.swp
 .DS_Store
