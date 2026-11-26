@@ -69,10 +69,15 @@ class FakeServer:
         return ".".join(labels)
 
 
-def closed_port():
-    with socket.socket() as probe:
-        probe.bind(("127.0.0.1", 0))
-        return probe.getsockname()[1]
+def silent_switch():
+    """A switch machine that never answers: we hold the port ourselves and never read it.
+
+    A port that is merely closed at this moment could be taken by any other
+    program on the machine a moment later, and then it would answer.
+    """
+    held = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    held.bind(("127.0.0.1", 0))
+    return held
 
 
 def a_reader(server, mode="killswitch", domain=KILL_DOMAIN):
@@ -100,8 +105,9 @@ def test_the_client_reads_whichever_address_the_record_holds():
 
 
 def test_the_client_tells_when_nobody_answered():
-    assert dnsquery.query("127.0.0.1", KILL_DOMAIN, timeout=0.2, tries=2, port=closed_port()) == (
-        None, None)
+    silent = silent_switch()
+    assert dnsquery.query("127.0.0.1", KILL_DOMAIN, timeout=0.2, tries=2,
+                          port=silent.getsockname()[1]) == (None, None)
 
 
 # ---- the reader is a part the worm can carry ----
@@ -239,7 +245,8 @@ def test_killswitch_status_says_what_the_worm_would_conclude(
 
 
 def test_status_never_says_run_when_the_switch_machine_is_silent(monkeypatch, tmp_path, capsys):
-    run_tool(monkeypatch, tmp_path, dict(SETTINGS, server="127.0.0.1", port=closed_port()))
+    silent = silent_switch()
+    run_tool(monkeypatch, tmp_path, dict(SETTINGS, server="127.0.0.1", port=silent.getsockname()[1]))
     assert tool.main(["status"]) == 0
     assert "the switch machine did not answer; the worm stops" in capsys.readouterr().out
 
@@ -302,7 +309,7 @@ def test_the_switch_machine_gets_the_switch_command():
     node = hosts["switch"]
     assert written(node)["/usr/local/bin/switch"] == (
         '#!/bin/bash\nPYTHONPATH=/opt/yom exec python3 -m yom_switch "$@"\n')
-    assert "/opt/yom/yom_switch/reader.py" in written(node)
+    assert "/opt/yom/yom_switch/reader.py" in node.getImportedFiles()   # copied exactly, as a real file
     assert "python3" in node.getSoftware()
 
 
