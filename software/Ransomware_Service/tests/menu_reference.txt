@@ -1,0 +1,102 @@
+==============================================================================
+SEED INCIDENT LAB
+Participant workspace / wallet and document exercises
+==============================================================================
+  Participant      10.9.9.9
+  Recorded state   PREPARED
+  Wallet           Not created
+
+  DOCUMENTS                      WALLET & FUNDING
+  [1] Instructions               [3] SEED Exchange (buy lab ETH)
+  [2] Inspect documents          [6] My wallet
+  [5] Document recovery (exchange)
+
+  [0] Exit
+
+Ransom payment is enforced by the RansomExchange contract on chain 18000.
+
+Home > 6
+==============================================================================
+PARTICIPANT WALLET
+Private chain 18000 / local password-protected keystore
+==============================================================================
+  Address          No wallet yet
+  Balance          Not checked
+  Last checked     Use r to refresh
+
+[c] Create wallet   [r] Refresh balance   [l] Look up an address
+[b] Back
+
+Wallet > b
+==============================================================================
+SEED INCIDENT LAB
+Participant workspace / wallet and document exercises
+==============================================================================
+  Participant      10.9.9.9
+  Recorded state   PREPARED
+  Wallet           Not created
+
+  DOCUMENTS                      WALLET & FUNDING
+  [1] Instructions               [3] SEED Exchange (buy lab ETH)
+  [2] Inspect documents          [6] My wallet
+  [5] Document recovery (exchange)
+
+  [0] Exit
+
+Ransom payment is enforced by the RansomExchange contract on chain 18000.
+
+Home > 3
+==============================================================================
+SEED CRYPTO EXCHANGE
+Play-money market / settlement on private chain 18000
+==============================================================================
+  Deposit address  No wallet yet — create one first (option 6)
+
+[b] Back
+
+Exchange > b
+==============================================================================
+SEED INCIDENT LAB
+Participant workspace / wallet and document exercises
+==============================================================================
+  Participant      10.9.9.9
+  Recorded state   PREPARED
+  Wallet           Not created
+
+  DOCUMENTS                      WALLET & FUNDING
+  [1] Instructions               [3] SEED Exchange (buy lab ETH)
+  [2] Inspect documents          [6] My wallet
+  [5] Document recovery (exchange)
+
+  [0] Exit
+
+Ransom payment is enforced by the RansomExchange contract on chain 18000.
+
+Home > 2
+==============================================================================
+DOCUMENT INSPECTION
+Current observations / no files changed
+==============================================================================
+  budget.csv       ENCRYPTED (.WNCRY) — ransomware envelope present
+  notes.txt        ENCRYPTED (.WNCRY) — ransomware envelope present
+  report.md        ENCRYPTED (.WNCRY) — ransomware envelope present
+
+Press Enter to continue...
+==============================================================================
+SEED INCIDENT LAB
+Participant workspace / wallet and document exercises
+==============================================================================
+  Participant      10.9.9.9
+  Recorded state   PREPARED
+  Wallet           Not created
+
+  DOCUMENTS                      WALLET & FUNDING
+  [1] Instructions               [3] SEED Exchange (buy lab ETH)
+  [2] Inspect documents          [6] My wallet
+  [5] Document recovery (exchange)
+
+  [0] Exit
+
+Ransom payment is enforced by the RansomExchange contract on chain 18000.
+
+Home > 0
