@@ -1,4 +1,4 @@
-"""The Morris buffer overflow, from Dr. Du's Morris worm example.
+"""The Morris buffer overflow, as in the Morris worm example.
 
 Two halves, built against the same program:
 

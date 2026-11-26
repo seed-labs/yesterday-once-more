@@ -17,8 +17,8 @@ from software.Vulnerable_Server import MorrisBof, MorrisBofExploit, VulnerableSe
 from software.Vulnerable_Server import Vulnerability, vulnerable_hosts
 from software.Vulnerable_Server.morris_bof import vulnerability as morris
 
-# sha256 of Prof. Du's two programs, as they are in his Morris worm example.
-HIS_PROGRAMS = {
+# sha256 of the two programs, as they are in the Morris worm example.
+MORRIS_PROGRAMS = {
     "server": "f0773df565f7424c5c89e0544cf7e64bc11a7f342b587ef0585ca553c9f10e65",
     "stack": "e1232b120bd7e148f390ee2bbe7724f67fab1d15846b27d3f7c838773c9d30d8",
 }
@@ -192,7 +192,7 @@ def test_the_installer_puts_prof_dus_programs_on_the_machine():
 
 
 def test_the_programs_are_prof_dus_unchanged_and_come_with_their_sources():
-    for name, digest in HIS_PROGRAMS.items():
+    for name, digest in MORRIS_PROGRAMS.items():
         assert hashlib.sha256((ASSETS / name).read_bytes()).hexdigest() == digest
     for name in ("Makefile", "server.c", "stack.c"):
         assert (ASSETS / "src" / name).is_file()

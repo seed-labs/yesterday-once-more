@@ -49,7 +49,7 @@ for victim in VICTIMS:
 
 ### MorrisBof
 
-The buffer-overflow server from Dr. Du's Morris worm example, unchanged.
+The buffer-overflow server of the Morris worm example, unchanged.
 `server` listens on port 9090 and hands each connection to `stack`, a 32-bit
 program with an executable stack that copies whatever it receives into a
 100-byte buffer. The two programs and their sources are in
@@ -115,7 +115,7 @@ machine. It has to run on any machine the bundle lands on.
   is just `exec zsh`. Bash also reads that file when it is started with `-c`
   and its input is a network connection, which is the situation an exploit
   creates. It is changed to run zsh only for interactive shells, so people
-  keep zsh. Dr. Du's example deletes the file instead.
+  keep zsh. The Morris worm example deletes the file instead.
 - **Imported files are not executable.** A file put on a machine arrives
   with no executable bit, so it is set when the machine boots.
 

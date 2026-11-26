@@ -7,12 +7,12 @@ What it can do depends on the mode of the switch:
         switch unregister      it is gone again: worms may spread again
         switch status          is the domain registered, and what would a worm do?
 
-    control (Prof. Du's encoding)
+    control (the Morris worm's encoding)
         switch run | pause | stop
         switch status
 
-It changes the DNS record with nsupdate, the same tool Dr. Du's Morris worm
-(control_worm.sh) uses.
+It changes the DNS record with nsupdate, the same tool the Morris worm
+example (control_worm.sh) uses.
 """
 
 import json
@@ -26,7 +26,7 @@ from .reader import PAUSE, RUN, STOP, SwitchUnreachable, conclude
 SETTINGS = Path("/opt/yom/switch.json")
 TTL = 5
 
-#: Prof. Du's addresses (control_worm.sh), one per command.
+#: The Morris worm's addresses (control_worm.sh), one per command.
 ADDRESSES = {RUN: "0.0.0.0", STOP: "1.0.0.0", PAUSE: "2.0.0.0"}
 VERBS = {"killswitch": ("register", "unregister", "status"),
          "control": (RUN, PAUSE, STOP, "status")}
@@ -86,7 +86,7 @@ def main(argv) -> int:
     elif verb == "register":
         value = settings["server"]             # the domain points at the switch machine
     else:
-        value = ADDRESSES[verb]                # Prof. Du's encoding
+        value = ADDRESSES[verb]                # the Morris worm's encoding
     return update(settings, value)
 
 

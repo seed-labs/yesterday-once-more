@@ -22,7 +22,7 @@ from software.Switch_Service.yom_switch import dnsquery, reader
 
 #: The kill switch of the real WannaCry: the long nonsense domain it looked for.
 KILL_DOMAIN = "www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com"
-HIS_NAME = "worm.com"                       # the control name in Prof. Du's Morris worm
+CONTROL_NAME = "worm.com"                       # the control name in the Morris worm example
 
 
 class FakeServer:
@@ -146,7 +146,7 @@ def test_a_reader_without_a_switch_machine_says_so():
         SwitchReader(KILL_DOMAIN).answer()
 
 
-# ---- the reader in control mode: Prof. Du's encoding, unchanged ----
+# ---- the reader in control mode: the Morris worm's encoding, unchanged ----
 
 @pytest.mark.parametrize(
     "address,expected",
@@ -154,21 +154,21 @@ def test_a_reader_without_a_switch_machine_says_so():
      ("10.0.0.0", "run"), ("11.0.0.0", "run"), ("9.9.9.9", "run")],
 )
 def test_control_the_first_number_of_the_address_is_the_command(address, expected):
-    """His worm.py reads the first number of the address of worm.com: 0 run, 1 stop, 2 pause.
+    """The Morris worm's worm.py reads the first number of the address of worm.com: 0 run, 1 stop, 2 pause.
 
-    10 (show) and 11 (off) only change how his worm is drawn, and anything else is run.
+    10 (show) and 11 (off) only change how a worm is drawn, and anything else is run.
     """
-    assert a_reader(FakeServer(0, has_address=True, address=address), "control", HIS_NAME).answer() == expected
+    assert a_reader(FakeServer(0, has_address=True, address=address), "control", CONTROL_NAME).answer() == expected
 
 
-def test_control_the_tool_writes_exactly_his_addresses():
+def test_control_the_tool_writes_the_morris_addresses_exactly():
     assert tool.ADDRESSES == {"run": "0.0.0.0", "stop": "1.0.0.0", "pause": "2.0.0.0"}
 
 
 def test_control_an_absent_name_means_run_and_a_silent_switch_is_no_go():
-    assert a_reader(FakeServer(3), "control", HIS_NAME).answer() == "run"
+    assert a_reader(FakeServer(3), "control", CONTROL_NAME).answer() == "run"
     with pytest.raises(SwitchUnreachable, match="did not answer"):
-        SwitchReader(HIS_NAME, "control", server="127.0.0.1", port=1, timeout=0.2, tries=1).answer()
+        SwitchReader(CONTROL_NAME, "control", server="127.0.0.1", port=1, timeout=0.2, tries=1).answer()
 
 
 # ---- the instructor's tool ----
@@ -199,7 +199,7 @@ def test_killswitch_the_tool_registers_and_unregisters_the_domain(monkeypatch, t
 
 
 def test_control_the_tool_writes_the_command_into_the_record(monkeypatch, tmp_path):
-    scripts = run_tool(monkeypatch, tmp_path, dict(SETTINGS, mode="control", domain=HIS_NAME, zone="com."))
+    scripts = run_tool(monkeypatch, tmp_path, dict(SETTINGS, mode="control", domain=CONTROL_NAME, zone="com."))
     assert [tool.main([verb]) for verb in ("run", "pause", "stop")] == [0, 0, 0]
     assert scripts == [
         "server 10.0.0.5\nzone com.\nupdate delete worm.com A\nupdate add worm.com 5 A 0.0.0.0\nsend\n",
@@ -209,12 +209,12 @@ def test_control_the_tool_writes_the_command_into_the_record(monkeypatch, tmp_pa
 
 
 def test_the_tool_offers_only_its_own_mode_s_commands_and_explains_itself(monkeypatch, tmp_path, capsys):
-    run_tool(monkeypatch, tmp_path, dict(SETTINGS, domain=HIS_NAME))
+    run_tool(monkeypatch, tmp_path, dict(SETTINGS, domain=CONTROL_NAME))
     for argv in ([], ["frobnicate"], ["stop"], ["register", "extra"]):
         assert tool.main(argv) == 2                      # "stop" is not a killswitch command
     assert "usage: switch register | unregister | status" in capsys.readouterr().out
 
-    run_tool(monkeypatch, tmp_path, dict(SETTINGS, mode="control", domain=HIS_NAME, zone="com."))
+    run_tool(monkeypatch, tmp_path, dict(SETTINGS, mode="control", domain=CONTROL_NAME, zone="com."))
     assert tool.main(["register"]) == 2                  # and "register" is not a control command
     assert "usage: switch run | pause | stop | status" in capsys.readouterr().out
 
@@ -350,10 +350,10 @@ def test_the_switch_is_one_machine():
 
 
 def test_a_control_switch_serves_prof_du_s_name_in_its_zone():
-    emu, hosts, switch, reader = build("control", HIS_NAME)
+    emu, hosts, switch, reader = build("control", CONTROL_NAME)
     emu.render()
     assert switch.zone == "com." and reader.mode == "control"
-    assert json.loads(written(hosts["switch"])["/opt/yom/switch.json"])["domain"] == HIS_NAME
+    assert json.loads(written(hosts["switch"])["/opt/yom/switch.json"])["domain"] == CONTROL_NAME
     assert switch.reader().mode == "control"
 
 

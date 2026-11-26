@@ -9,7 +9,7 @@ answer means depends on the switch's mode:
                  researcher registered the domain, new copies found it and
                  stopped.
     control      the first number of the address is the command, exactly as
-                 in Prof. Du's Morris worm: 0 run, 1 stop, 2 pause.
+                 in the Morris worm example: 0 run, 1 stop, 2 pause.
 
 In both modes, "the name is not registered" means run, and a switch machine
 that does not answer at all is never a "go": the reader raises instead, and
@@ -26,9 +26,9 @@ SLOT = "control"
 RUN, PAUSE, STOP = "run", "pause", "stop"
 MODES = ("control", "killswitch")
 
-#: Prof. Du's encoding (control_worm.sh): 0.0.0.0 is run, 1.0.0.0 is stop,
-#: 2.0.0.0 is pause. His 10.0.0.0 ("show") and 11.0.0.0 ("off") only change how
-#: his worm is drawn on a map, so for a worm they mean: keep going.
+#: The Morris worm's encoding (control_worm.sh): 0.0.0.0 is run, 1.0.0.0 is stop,
+#: 2.0.0.0 is pause. Its 10.0.0.0 ("show") and 11.0.0.0 ("off") only change how
+#: a worm is drawn on a map, so for a worm they mean: keep going.
 COMMANDS = {0: RUN, 1: STOP, 2: PAUSE}
 
 

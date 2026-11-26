@@ -39,9 +39,9 @@ The lab does the same, with DNS only. The domain is absent, so the worm
 runs. The instructor runs `switch register`, the domain answers, and every
 copy that asks stops. `switch unregister` makes it spread again.
 
-### control: Prof. Du's encoding
+### control: the Morris worm's encoding
 
-This is the control of his Morris worm, unchanged. The address of the
+This is the control of the Morris worm example, unchanged. The address of the
 record is the command, and a worm reads its first number:
 
 | The record | The worm |
@@ -50,7 +50,7 @@ record is the command, and a worm reads its first number:
 | `1.0.0.0` | stops |
 | `2.0.0.0` | pauses |
 
-His `10.0.0.0` (show) and `11.0.0.0` (off) only change how his worm is drawn
+There, `10.0.0.0` (show) and `11.0.0.0` (off) only change how a worm is drawn
 on a map, so for this worm they mean: keep going.
 
 ## What never changes
@@ -68,7 +68,7 @@ on a map, so for this worm they mean: keep going.
 
 - The switch machine runs a real BIND server, seedemu's own, for the zone
   the name lives in. The tool changes the record with `nsupdate`, the same
-  tool Dr. Du's Morris worm uses.
+  tool the Morris worm example uses.
 - By default the switch changes nothing else in the lab. No machine's
   resolver is touched: the reader asks the switch machine by its address.
 

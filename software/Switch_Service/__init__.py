@@ -10,7 +10,7 @@
 
 Two modes. In "killswitch" the record is the kill switch of the real WannaCry:
 absent, the worm runs; registered, every worm stops. In "control" the record
-carries Prof. Du's encoding and the instructor flips it by hand.
+carries the Morris worm's encoding and the instructor flips it by hand.
 """
 
 from .service import DnsSwitch
