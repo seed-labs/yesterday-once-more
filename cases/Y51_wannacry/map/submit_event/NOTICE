@@ -1,0 +1,15 @@
+This add-on comes unchanged from the SEED-Emulator repository:
+
+    tools/InternetMap2/plugin/submit_event/
+
+It is the add-on the Morris worm and Mirai examples there use to show
+infected machines on the Internet Map. With it installed, a machine calls
+
+    bash /map-plugins/submit_event.sh -a flash        (or highlight, or restore)
+
+and the map flashes that machine. The map's server looks for this folder at
+/usr/src/app/plugin/submit_event inside itself, so it is put there when the
+lab is built. It only has to be switched on once the lab is up:
+
+    curl -X POST -H "Content-Type: application/json" \
+         -d '{"name": "submit_event"}' http://localhost:8082/api/v1/install

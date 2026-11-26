@@ -1,0 +1,11 @@
+Ooops, your documents are locked!
+
+Every document in this folder has been encrypted and now carries the
+extension .WNCRY. The key that unlocks them is held by the attacker.
+
+To recover your documents, run the menu:
+
+    ransom
+
+It lets you create a wallet, buy lab money on the exchange, pay the ransom,
+and receive your decryption key.
