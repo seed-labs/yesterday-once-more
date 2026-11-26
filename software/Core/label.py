@@ -41,14 +41,23 @@ def new_label(name: str, start: str, settings: dict = None, needs: dict = None) 
     return {"name": name, "start": start, "settings": settings or {}, "needs": needs or {}}
 
 
-def write_label(folder, label: dict) -> Path:
-    """Write a label into a payload's folder."""
+def label_text(label: dict) -> str:
+    """A label as the text of its file.
+
+    Whoever places a payload on a machine at build time writes this text
+    there; whoever writes one on a machine at run time uses `write_label`.
+    """
     for key in REQUIRED:
         if not label.get(key):
             raise ValueError(f"a label needs a {key}")
+    return json.dumps(label, indent=2) + "\n"
+
+
+def write_label(folder, label: dict) -> Path:
+    """Write a label into a payload's folder."""
     path = Path(folder) / LABEL_FILE
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(label, indent=2) + "\n", encoding="utf-8")
+    path.write_text(label_text(label), encoding="utf-8")
     return path
 
 

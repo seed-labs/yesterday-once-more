@@ -11,30 +11,23 @@ from pathlib import Path
 HOME = "/opt/yom"
 
 
-def _text(path: Path):
-    """The file's content if it is text, else None."""
-    data = path.read_bytes()
-    if b"\0" in data:
-        return None
-    try:
-        return data.decode("utf-8")
-    except UnicodeDecodeError:
-        return None
-
-
 def place_files(machines, source, dest, network=None) -> int:
     """Copy a folder, or one file, onto machines. Returns how many files each got.
 
     A folder is copied as it is, subfolders included, and `dest` is the folder
     that will hold it. A single file is copied to `dest`, its full new path.
-    Text is written into the machine; anything else (a program, an image) is
-    imported as a real file, which then needs its executable bit set at boot.
 
-    A machine is a node, or several nodes in a list. A case may name them
-    instead, as it named them when it built its network, and pass that network:
+    Every file is imported as a real file, byte for byte. (A file written as
+    text gets an extra empty line at its end, and a document would then no
+    longer be identical to its original.) An imported file arrives without
+    its executable bit, so a program needs `chmod +x` when the machine boots.
+
+    A machine is a node, or several nodes in a list. A case may also name
+    machines instead, as it named them when it built its network, and pass
+    that network:
 
         place_files(node, "yom_worm", "/opt/yom/yom_worm")
-        place_files(VICTIMS, "documents/", "/home/seed/Documents", network=lab)
+        place_files(VICTIMS, HERE / "documents", "/home/seed/Documents", network=lab)
     """
     if isinstance(machines, str) or hasattr(machines, "getFiles"):
         machines = [machines]
@@ -59,11 +52,7 @@ def place_files(machines, source, dest, network=None) -> int:
 
     for node in nodes:
         for path, target in copies:
-            content = _text(path)
-            if content is None:
-                node.importFile(str(path), target)
-            else:
-                node.setFile(target, content)
+            node.importFile(str(path), target)
     return len(copies)
 
 
